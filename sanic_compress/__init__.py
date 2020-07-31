@@ -35,11 +35,14 @@ class Compress(object):
             await self._compress_response(request, response)
 
     async def _compress_response(self, request, response):
+        if not response.content_type or not hasattr(response, 'body'):
+            return response
+
         accept_encoding = request.headers.get('Accept-Encoding', '')
         content_length = len(response.body)
         content_type = response.content_type
 
-        if response.content_type and ';' in response.content_type:
+        if ';' in response.content_type:
             content_type = content_type.split(';')[0]
 
         if (content_type not in self.app.config['COMPRESS_MIMETYPES'] or
