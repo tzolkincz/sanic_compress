@@ -3,6 +3,9 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
+from cachetools import TTLCache
+from asyncache import cached
+
 DEFAULT_MIME_TYPES = frozenset([
     'text/html', 'text/css', 'text/xml',
     'application/json',
@@ -67,5 +70,9 @@ class Compress(object):
 
         return response
 
+    @cached(TTLCache(128, 5 * 60))
+    def cached_compress(self, body):
+        return self.gzip_func(body)
+
     async def compress_body(self, response):
-        response.body = await asyncio.get_event_loop().run_in_executor(self.executors, self.gzip_func, response.body)
+        response.body = await asyncio.get_event_loop().run_in_executor(self.executors, self.cached_compress, response.body)

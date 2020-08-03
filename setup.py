@@ -9,14 +9,14 @@ except:
 
 setup(
     name='sanic_compress',
-    version='0.1.2',
+    version='0.1.3',
     description='An extension which allows you to easily gzip your Sanic responses.',
     long_description=long_description,
     url='http://github.com/subyraman/sanic_session',
     author='Suby Raman',
     license='MIT',
     packages=['sanic_compress'],
-    install_requires=('sanic'),
+    install_requires=('sanic', 'cachetools', 'asyncache'),
     zip_safe=False,
     keywords=['sanic', 'gzip'],
     classifiers=[
